@@ -1,0 +1,22 @@
+{
+  "name": "media-file-sender",
+  "version": "1.0.0",
+  "description": "read usb png and mp4 files and send them",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elanioazul/media-file-sender.git"
+  },
+  "keywords": [
+    "treecam"
+  ],
+  "author": "hugo.herrador@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/elanioazul/media-file-sender/issues"
+  },
+  "homepage": "https://github.com/elanioazul/media-file-sender#readme"
+}
