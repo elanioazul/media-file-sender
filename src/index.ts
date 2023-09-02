@@ -33,7 +33,7 @@ console.log(otherInfo);
 const path = require('path')
 
 // Assigning a path to the myPath variable
-const myPath = '/mnt/c/Desktop/index.ts'
+const myPath = 'Desktop/index.ts'
 
 const pathInfo = {
     fileName: path.basename(myPath),
