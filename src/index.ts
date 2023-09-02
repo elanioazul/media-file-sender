@@ -75,3 +75,13 @@ fs.writeFile('./myFolder/myFile.txt', data, {flag: 'a'}, (err: any) => {
     	console.log('Writen to file successfully!');
     }
 })
+
+fs.readFile('./myFolder/myFile.txt', {encoding: 'utf-8'}, (err: any, data: string) => {
+    if(err){
+    	console.log(err);
+        return;
+    } else {
+    	console.log('File read successfully! Here is the data');
+        console.log(data);
+    }
+})
