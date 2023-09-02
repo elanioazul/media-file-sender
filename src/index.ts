@@ -49,3 +49,29 @@ console.log(pathInfo);
 
 
 console.log(path.resolve('grandParentFolder', 'parentFolder', 'child.txt'));
+
+
+// Import fs module
+const fs = require('fs');
+
+// Present Working Directory: C:\Users\hugoh\Documents\projects_personal\media-file-sender
+// Making a new directory called ./myFolder:
+
+fs.mkdir('./myFolder', (err: any) => {
+    if(err){
+    	console.log(err);
+    } else{
+    	console.log('Folder Created Successfully');
+    }
+})
+
+const data = "Hi,this is newFile.txt";
+
+fs.writeFile('./myFolder/myFile.txt', data, {flag: 'a'}, (err: any) => {
+    if(err){
+        console.log(err);
+        return;
+    } else {
+    	console.log('Writen to file successfully!');
+    }
+})
