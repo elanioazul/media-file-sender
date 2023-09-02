@@ -45,3 +45,7 @@ const pathInfo = {
 
 // Let's See The Results:
 console.log(pathInfo);
+
+
+
+console.log(path.resolve('grandParentFolder', 'parentFolder', 'child.txt'));
