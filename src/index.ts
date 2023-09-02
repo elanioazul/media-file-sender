@@ -33,7 +33,7 @@ console.log(otherInfo);
 const path = require('path')
 
 // Assigning a path to the myPath variable
-const myPath = 'C:/Users/hugoh/Documents/projects_personal/media-file-sender/index.ts'
+const myPath = 'hugoh/Documents/projects_personal/media-file-sender/index.ts'
 
 const pathInfo = {
     fileName: path.basename(myPath),
