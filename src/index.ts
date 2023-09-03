@@ -109,3 +109,12 @@ fs.readdir('./myFolder', (err: any, files: any[]) => {
     console.log('Directory read successfully! Here are the files:');
     console.log(files);
 })
+
+
+fs.rename('./myFolder/newFile2.txt', 'newFileAsync2.txt', (err:any)=>{
+    if(err){
+    	console.log(err);
+        return;
+    }
+    console.log('File renamed successfully!')
+})
