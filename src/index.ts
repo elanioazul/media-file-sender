@@ -118,3 +118,12 @@ fs.rename('./myFolder/newFile2.txt', 'newFileAsync2.txt', (err:any)=>{
     }
     console.log('File renamed successfully!')
 })
+
+
+fs.unlink('./myFolder/myFileSync.txt', (err: any) => {
+    if(err){
+        console.log(err);
+        return;
+    }
+    console.log('File Deleted Successfully!')
+})
