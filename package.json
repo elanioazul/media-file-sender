@@ -23,7 +23,10 @@
   "homepage": "https://github.com/elanioazul/media-file-sender#readme",
   "dependencies": {
     "@types/filesystem": "0.0.32",
-    "fs": "0.0.1-security"
+    "axios": "^1.5.0",
+    "fs": "0.0.1-security",
+    "rxjs": "^7.8.1",
+    "usb": "^2.10.0"
   },
   "devDependencies": {
     "@types/node": "^20.5.2",
