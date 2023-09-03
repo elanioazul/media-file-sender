@@ -100,3 +100,12 @@ try{
     console.log('Error occurred!');
     console.log(err);
 }
+
+fs.readdir('./myFolder', (err: any, files: any[]) => {
+    if(err){
+    	console.log(err);
+        return;
+    }
+    console.log('Directory read successfully! Here are the files:');
+    console.log(files);
+})
