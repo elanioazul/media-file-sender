@@ -1,3 +1,6 @@
+# multer initial storage
+/files
+
 # Logs
 logs
 *.log
