@@ -87,7 +87,7 @@ function hasExifData(filePath: string) {
 }
 
 // Example usage
-const filePath = './cazaimagen/DSCF0014.JPG';
+const filePath = './files/DSCF0014.JPG';
 const hasExif = hasExifData(filePath);
 
 if (hasExif) {
