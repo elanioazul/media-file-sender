@@ -1,116 +1,57 @@
-import { UsbManager } from './classes/usb-manager';
-import { UsbObserver } from './interfaces/usb-observer-interface';
-import { FileManager } from './classes/file-manager';
-import { MediaUploader } from './classes/media-uploader';
 import * as usb from 'usb';
-import * as fs from 'fs';
-import * as path from 'path';
-import { env } from 'process';
-import dotenv from 'dotenv';
-//USBSTOR\DISK&VEN_KINGSTON&PROD_DATATRAVELER_2.0&REV_PMAP\001D0F1886A15B890B020984&0
-//VENDOR ID = KINGSTON
-//DEVICE ID = PMAP\001D0F1886A15B890B020984&0
-// 001D0F1886A15B890B020984
-dotenv.config();
 
-//const usbManager = new UsbManager('KINGSTON', 'PMAP/001D0F1886A15B890B020984&0'); // Replace VID and PID with your USB device's values
-//const usbManager = new UsbManager('0x0930', '6x545'); // Replace VID and PID with your USB device's values
-//const usbManager = new UsbManager('0930', '6545'); // Replace VID and PID with your USB device's values
-const usbManager = new UsbManager('125F', 'C08A'); // Replace VID and PID with your USB device's values
+const VENDOR_ID = 0x0930;
+const PRODUCT_ID = 0x6545;
 
-//const sourceDirectory = '/path/to/source/directory';
-const sourceDirectory = 'D:/camfiles-source';
-const destinationDirectory = './files';
-
-const fileManager = new FileManager(sourceDirectory, destinationDirectory);
-const mediaUploader = new MediaUploader(process.env.ENDPOINT as string);
-
-class MediaProcessor implements UsbObserver {
-  constructor(){}
-  onUsbAttach(device: usb.Device) {
-    console.log('desde usb o ke')
-    const mediaFiles = fs.readdirSync(sourceDirectory).filter((file) => {
-      const extname = path.extname(file).toLowerCase();
-      return extname === '.mp4' || extname === '.png';
-    });
-
-    mediaFiles.forEach(async (file) => {
-      const sourceFilePath = path.join(sourceDirectory, file);
-      const destinationFilePath = path.join(destinationDirectory, file);
-
-      if (!fileManager.fileExists(destinationFilePath)) {
-        await fileManager.copyFile(sourceFilePath, destinationFilePath);
-        try {
-          const response = await mediaUploader.uploadFile(destinationFilePath);
-          console.log('File uploaded successfully:', response.data);
-        } catch (error) {
-          console.error('Error uploading file:', error);
-        }
-      }
-    });
-  }
-
-  onUsbDetach(device: usb.Device) {
-    // Handle detach event if needed
-    console.log('usb detached')
-  }
+interface USBDeviceDescriptor {
+  idVendor: number;
+  idProduct: number;
+  iManufacturer: number;
+  iProduct: number;
+  iSerial: number;
 }
 
-const mediaProcessor = new MediaProcessor();
-usbManager.attachObserver(mediaProcessor);
+const findDevice = (): usb.Device | undefined => {
+  const devices = usb.getDeviceList();
+  return devices.find(device => device.deviceDescriptor.idVendor === VENDOR_ID && device.deviceDescriptor.idProduct === PRODUCT_ID);
+};
 
+const logDeviceDetails = async (device: usb.Device): Promise<void> => {
+  device.open();
 
-// const fs = require('fs');
-// const ExifParser = require('exif-parser');
+  const deviceDescriptor: any = device.deviceDescriptor;
 
-// function extractCoordinates(filePath: string) {
-//   try {
-//     const fileData = fs.readFileSync(filePath);
-//     const exifParser = ExifParser.create(fileData);
-//     const result = exifParser.parse();
-    
-//     if (result && result.tags && result.tags.GPSLatitude && result.tags.GPSLongitude) {
-//       const latitude = result.tags.GPSLatitude;
-//       const longitude = result.tags.GPSLongitude;
-//       return {
-//         latitude: `${latitude[0]}° ${latitude[1]}' ${latitude[2]}" ${result.tags.GPSLatitudeRef}`,
-//         longitude: `${longitude[0]}° ${longitude[1]}' ${longitude[2]}" ${result.tags.GPSLongitudeRef}`,
-//       };
-//     } else {
-//       return null; // No GPS coordinates found in the EXIF data
-//     }
-//   } catch (error: any) {
-//     console.error(`Error parsing EXIF data: ${error.message}`);
-//     return null;
-//   }
-// }
+  console.log('USB Mass Storage Device Details:');
+  console.log('Vendor ID:', deviceDescriptor.idVendor);
+  console.log('Product ID:', deviceDescriptor.idProduct);
 
-// function hasExifData(filePath: string) {
-//   try {
-//     const fileData = fs.readFileSync(filePath);
-//     const exifParser = ExifParser.create(fileData);
-//     const result = exifParser.parse();
-    
-//     return Boolean(result && result.tags);
-//   } catch (error: any) {
-//     console.error(`Error checking for EXIF data: ${error.message}`);
-//     return false;
-//   }
-// }
+  const manufacturer = await getStringDescriptor(device, deviceDescriptor.iManufacturer);
+  const product = await getStringDescriptor(device, deviceDescriptor.iProduct);
+  const serialNumber = await getStringDescriptor(device, deviceDescriptor.iSerial);
 
-// // Example usage
-// const filePath = './files/DSCF0014.JPG';
-// const hasExif = hasExifData(filePath);
+  console.log('Manufacturer:', manufacturer);
+  console.log('Product:', product);
+  console.log('Serial Number:', serialNumber);
 
-// if (hasExif) {
-//   console.log(`${filePath}` + ' contains EXIF metadata.');
-//   const coordinates = extractCoordinates(filePath);
-//   if (coordinates) {
-//     console.log(`Latitude: ${coordinates.latitude}`);
-//     console.log(`Longitude: ${coordinates.longitude}`);
-//   } else {
-//     console.log('No GPS coordinates found in the EXIF data.');
-//   }
-// } else {
-//   console.log(`${filePath}` + ' does not contains EXIF metadata.');
-// }
+  device.close();
+};
+
+const getStringDescriptor = (device: usb.Device, desc_index: number): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    device.getStringDescriptor(desc_index, (error, value) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(value || '');
+      }
+    });
+  });
+};
+
+const usbDevice = findDevice();
+
+if (usbDevice) {
+  logDeviceDetails(usbDevice).catch(error => console.error('Error:', error));
+} else {
+  console.log('USB mass storage device not found.');
+}
