@@ -73,4 +73,24 @@ export class UsbManager {
       console.error(`Error listing directories: ${error}`);
     }
   };
+
+  findDirectory = async (directory: string, targetName: string): Promise<string | null> => {
+    try {
+      const files = await fs.promises.readdir(directory);
+  
+      for (const file of files) {
+        const filePath = path.join(directory, file);
+        const fileStats = await fs.promises.stat(filePath);
+  
+        if (fileStats.isDirectory() && file === targetName) {
+          return filePath;
+        }
+      }
+  
+      return null; // Target directory not found
+    } catch (error) {
+      console.error(`Error listing directories: ${error}`);
+      return null;
+    }
+  };
 }
