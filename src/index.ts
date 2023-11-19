@@ -18,7 +18,7 @@ const main = async () => {
       await usbManager.logDeviceDetails(device).catch(error => console.error('Error:', error));
       await usbManager.listDirectories(sourceDirectory);
       console.log(`Found target directory: ${foundTargetDirectory}`);
-      usbManager.watchDirectory(targetDirectory); 
+      usbManager.watchDirectory(sourceDirectory + '/' + targetDirectory); 
     } else {
       console.log(`Target directory not found.`);
     }
