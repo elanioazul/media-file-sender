@@ -1,4 +1,6 @@
 import { UsbManager } from './classes/usb-manager';
+import { MediaUploader } from './classes/media-uploader';
+
 
 //my usb device details
 const VENDOR_ID = 0x0930;
@@ -7,6 +9,7 @@ const sourceDirectory = '/media/hugoherrador/MI PEN';
 const targetDirectory = 'camfiles-source';
 
 const usbManager = new UsbManager(VENDOR_ID, PRODUCT_ID); 
+const uploader = new MediaUploader(process.env.ENDPOINT as string)
 
 
 const main = async () => {
@@ -18,7 +21,7 @@ const main = async () => {
       await usbManager.logDeviceDetails(device).catch(error => console.error('Error:', error));
       await usbManager.listDirectories(sourceDirectory);
       console.log(`Found target directory: ${foundTargetDirectory}`);
-      usbManager.watchDirectory(sourceDirectory + '/' + targetDirectory); 
+      usbManager.watchDirectory(sourceDirectory + '/' + targetDirectory, uploader); 
     } else {
       console.log(`Target directory not found.`);
     }

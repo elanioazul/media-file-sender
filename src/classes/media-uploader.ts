@@ -11,6 +11,8 @@ export class MediaUploader {
   }
 
   public uploadFile(filePath: string): Promise<any> {
+    console.log('uploading file just started');
+    
     /*The special thing about FormData is that network methods, such as fetch, can accept a FormData object as a body. 
     It’s encoded and sent out with Content-Type: multipart/form-data.*/
     const formData = new FormData();
@@ -31,7 +33,10 @@ export class MediaUploader {
 
     return axios.post(this.uploadUrl, formData, {
       headers: formData.getHeaders(),
-    });
+    }).catch(error => {
+      console.error('Error uploading file:', error);
+      throw error;
+    });;
 
   }
 

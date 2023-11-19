@@ -2,7 +2,6 @@ import * as usb from 'usb';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as chokidar from 'chokidar';
-
 import { env } from 'process';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -95,7 +94,7 @@ export class UsbManager {
     }
   };
 
-  watchDirectory = (directory: string): void => {
+  watchDirectory = (directory: string, uploader: any): void => {
     console.log(`Watching directory: ${directory}`);
   
     const watcher = chokidar.watch(directory, {
@@ -115,8 +114,11 @@ export class UsbManager {
           console.log(`File path: ${filePath}`);
           console.log(`File size: ${fileStats.size} bytes`);
           console.log(`Last modified: ${fileStats.mtime}`);
+
+          await uploader.uploadFile(filePath);
+          console.log(`File uploaded successfully.`);
         } catch (error) {
-          console.error(`Error reading file details: ${error}`);
+          console.error(`Error processing file: ${error}`);
         }
       }
     });
